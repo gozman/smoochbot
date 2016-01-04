@@ -28,7 +28,7 @@ var bot = controller.spawn()
 
 bot.configureIncomingWebhook();
 
-controller.setupWebserver(3000, function(err, server) {
+controller.setupWebserver(process.env.PORT, function(err, server) {
   controller.createWebhookEndpoints(server);
 });
 
