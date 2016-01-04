@@ -16,12 +16,12 @@ console.log(process.env);
 
 var controller = Botkit.smoochbot({
     debug: true,
-    appToken:process.env.apptoken,
-    key:process.env.keyid,
-    secret:process.env.secret,
-    incoming_webhook:{url:process.env.webhookurl},
-    bot_name:process.env.botname,
-    avatar_url:process.env.avatarurl
+    appToken:process.env.APPTOKEN,
+    key:process.env.KEY,
+    secret:process.env.SECRET,
+    incoming_webhook:{url:process.env.INCOMING_WEBHOOK},
+    bot_name:process.env.BOT_NAME,
+    avatar_url:process.env.AVATAR_URL
 });
 
 var bot = controller.spawn()
