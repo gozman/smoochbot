@@ -1,0 +1,33 @@
+{
+  "name": "SmoochBot",
+  "description": "A botkit fork for implementing Smooch bots",
+  "repository": "https://github.com/gozman/smoochbot",
+  "logo": "https://assets.brandfolder.com/b6k4f6zh/view.png",
+  "keywords": ["ai", "smooch", "bot"],
+  "env": {
+    "APPTOKEN" : {
+      "description": "Smooch app token",
+      "required": true
+    },
+    "KEY": {
+      "description": "API Key",
+      "required": true
+    },
+    "SECRET": {
+      "description": "API Secret",
+      "required": true
+    },    
+    "BOT_NAME": {
+      "description": "Bot Name",
+      "required": true
+    },
+    "INCOMING_WEBHOOK": {
+      "description": "Base URL of the bot + /smooch/",
+      "required": true
+    },
+    "AVATAR_URL": {
+      "description": "Avatar URL",
+      "required": false
+    }
+  } 
+}
