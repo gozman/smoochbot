@@ -27,22 +27,36 @@ var controller = Botkit.smoochbot({
 var bot = controller.spawn()
 
 bot.configureIncomingWebhook();
+controller.startTicking();
 
 controller.setupWebserver(process.env.PORT, function(err, server) {
   controller.createWebhookEndpoints(server);
 });
 
-controller.hears(['hello','hi','sup','yo','hey'],'message:appUser',function(bot,message) {
+controller.hears(['hello','hi','sup','yo','hey'],'message_received',function(bot,message) {
   controller.storage.users.get(message.user,function(err,user) {
     if (user && user.name) {
       bot.reply(message,"Hello " + user.name+"!!");
     } else {
       bot.reply(message,"Hello.");
     }
+
+    if(!user) {
+      user = {
+        id: message.user,
+      }
+    }
+
+    if(user && !(user.email)) {
+      bot.startConversation(message, askEmail);
+    } else {
+      console.log(bot);
+      bot.startConversation(message, askArea);
+    }
   });
 })
 
-controller.hears(['call me (.*)'],'message:appUser',function(bot,message) {
+controller.hears(['call me (.*)'],'message_received',function(bot,message) {
   var matches = message.text.match(/call me (.*)/i);
   var name = matches[1];
   controller.storage.users.get(message.user,function(err,user) {
@@ -58,7 +72,7 @@ controller.hears(['call me (.*)'],'message:appUser',function(bot,message) {
   })
 });
 
-controller.hears(['what is my name','who am i', 'what\'s my name'],'message:appUser',function(bot,message) {
+controller.hears(['what is my name','who am i', 'what\'s my name'],'message_received',function(bot,message) {
 
   controller.storage.users.get(message.user,function(err,user) {
     if (user && user.name) {
@@ -69,42 +83,65 @@ controller.hears(['what is my name','who am i', 'what\'s my name'],'message:appU
   })
 });
 
-
-controller.hears(['shutdown'],'message:appUser',function(bot,message) {
-
-  bot.startConversation(message,function(err,convo) {
-    convo.ask("Are you sure you want me to shutdown?",[
-      {
-        pattern: bot.utterances.yes,
-        callback: function(response,convo) {
-          convo.say("Bye!");
-          convo.next();
-          setTimeout(function() {
-            process.exit();
-          },3000);
-        }
-      },
-      {
-        pattern: bot.utterances.no,
-        default:true,
-        callback: function(response,convo) {
-          convo.say("*Phew!*");
-          convo.next();
-        }
-      }
-    ])
-  })
-})
-
-
-controller.hears(['uptime','identify yourself','who are you','what is your name'],'message:appUser',function(bot,message) {
+controller.hears(['uptime','identify yourself','who are you','what is your name'],'message_received',function(bot,message) {
 
   var hostname = os.hostname();
   var uptime = formatUptime(process.uptime());
 
-  bot.reply(message,':robot_face: I am a bot named SmoochBot I have been running for ' + uptime + ' on ' + hostname + ".");
+  bot.reply(message,'I am a bot named SmoochBot I have been running for ' + uptime + ' on ' + hostname + ".");
 
-})
+});
+
+var askEmail = function(response, convo) {
+  console.log(convo);
+
+  convo.ask("Before we begin, can you please give me your e-mail address, this way someone from my team can get back to you if they're not around right now?", function(response, convo) {
+
+    console.log(response);
+    controller.storage.users.get(response.user,function(err,user) {
+      if (!user) {
+        user = {
+          email: response.text,
+        }
+      }
+      user.email = response.text;
+      controller.storage.users.save(user,function(err,id) {
+        convo.say("Awesome");
+      });
+    });
+
+    askArea(response,convo);
+    convo.next();
+  });
+}
+
+var askArea = function(response, convo) {
+  convo.ask("Do you have a technical question?", [
+    {
+      pattern: bot.utterances.yes,
+      callback: function(response, convo) {
+        convo.say('Cool, one of my @engineers will be able to help you if I can\'t');
+        askPlatform(response,convo);
+        convo.next();
+      }
+    },
+    {
+      pattern: bot.utterances.no,
+      default: true,
+      callback: function(response, convo) {
+        convo.say('*Phew!* I still haven\'t had any coffee and my circuits are a little rusty. One of my human friends from our @biz team will lend a hand in a few.');
+        convo.next();
+      }
+    }
+    ]);
+}
+
+var askPlatform = function(response, convo) {
+  convo.ask("What platform are you working with, iOS, Android, Web, or API?", function(response, convo) {  
+    convo.say("Thanks, I've alterted our @engineers - they'll be around in a jiffy.");
+    convo.next();
+  });
+}
 
 function formatUptime(uptime) {
   var unit = 'second';
