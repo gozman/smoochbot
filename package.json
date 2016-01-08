@@ -5,6 +5,7 @@
   "dependencies": {
     "babel-runtime": "6.3.13",
     "body-parser": "^1.13.3",
+    "email-validator": "^1.0.3",
     "express": "^4.13.3",
     "jfs": "^0.2.6",
     "mustache": "^2.1.3",

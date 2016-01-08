@@ -11,11 +11,9 @@
 
 var Botkit = require('./lib/Botkit.js')
 var os = require('os');
-
-console.log(process.env);
+var validator = require("email-validator");
 
 var controller = Botkit.smoochbot({
-    debug: true,
     appToken:process.env.APPTOKEN,
     key:process.env.KEY,
     secret:process.env.SECRET,
@@ -34,54 +32,18 @@ controller.setupWebserver(process.env.PORT, function(err, server) {
 });
 
 controller.hears(['hello','hi','sup','yo','hey'],'message_received',function(bot,message) {
-  controller.storage.users.get(message.user,function(err,user) {
-    if (user && user.name) {
-      bot.reply(message,"Hello " + user.name+"!!");
-    } else {
-      bot.reply(message,"Hello.");
-    }
+  bot.api.appUsers.get(message.user).then(function(response) {
 
-    if(!user) {
-      user = {
-        id: message.user,
-      }
-    }
+    bot.reply(message,"Hello.");
 
-    if(user && !(user.email)) {
+    if (response && response.appUser && !response.appUser.email) {
       bot.startConversation(message, askEmail);
     } else {
-      console.log(bot);
       bot.startConversation(message, askArea);
     }
   });
+
 })
-
-controller.hears(['call me (.*)'],'message_received',function(bot,message) {
-  var matches = message.text.match(/call me (.*)/i);
-  var name = matches[1];
-  controller.storage.users.get(message.user,function(err,user) {
-    if (!user) {
-      user = {
-        id: message.user,
-      }
-    }
-    user.name = name;
-    controller.storage.users.save(user,function(err,id) {
-      bot.reply(message,"Got it. I will call you " + user.name + " from now on.");
-    })
-  })
-});
-
-controller.hears(['what is my name','who am i', 'what\'s my name'],'message_received',function(bot,message) {
-
-  controller.storage.users.get(message.user,function(err,user) {
-    if (user && user.name) {
-      bot.reply(message,"Your name is " + user.name);
-    } else {
-      bot.reply(message,"I don't know yet!");
-    }
-  })
-});
 
 controller.hears(['uptime','identify yourself','who are you','what is your name'],'message_received',function(bot,message) {
 
@@ -97,21 +59,17 @@ var askEmail = function(response, convo) {
 
   convo.ask("Before we begin, can you please give me your e-mail address, this way someone from my team can get back to you if they're not around right now?", function(response, convo) {
 
-    console.log(response);
-    controller.storage.users.get(response.user,function(err,user) {
-      if (!user) {
-        user = {
-          email: response.text,
-        }
-      }
-      user.email = response.text;
-      controller.storage.users.save(user,function(err,id) {
-        convo.say("Awesome");
+    if(validator.validate("test@email.com")) {
+      bot.api.appUsers.update(response.user, {"email": response.text}).then(function(response) {
+        convo.say("Awesome, thanks!");
+        askArea(response,convo);
+        convo.next();
       });
-    });
-
-    askArea(response,convo);
-    convo.next();
+    } else {
+      convo.say("Alright");
+      askArea(response,convo);
+      convo.next();
+    }
   });
 }
 
