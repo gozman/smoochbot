@@ -364,10 +364,8 @@ askWhereDeliver = function(response, convo) {
 
 ## Working with the Smooch API
 
-There are a dizzying number of ways to integrate your application into Slack.
-Up to this point, this document has mainly dealt with the real time / bot user
-integration.  In addition to this type of integration, Botkit also supports:
+A bot's "api" property contains an initialized instance of [smooch-core](https://github.com/lemieux/smooch-core-js). You can use this to access any of the API methods available in the [Smooch REST API](http://docs.smooch.io/rest/).
 
-## Advanced Topics
+You can use the API methods to set and retrieve user profile information and more.
 
 
