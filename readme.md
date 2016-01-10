@@ -11,6 +11,10 @@ You can use SmoochBot to:
  * Provide shipping and logistic updates to your customers in response to events in your CRM or E-Commerce system
  * Almost anything else you can imagine!
 
+You can use SmoochBot to have conversation with your users and customers across any platform that we support: In-App iOS and Android, on the web, and over SMS. Conversations with SmoochBot can be supervised by humans on your team and they can join in the discourse at any time using Slack, HipChat, Help Scout, Zendesk or their favourite CRM.
+
+![SmoochBot on the web](https://media.giphy.com/media/3oxRmmmMkNG504mOGY/giphy.gif)
+
 We've based SmoochBot on the awesome [BotKit](http://howdy.ai/botkit). This means that if you're used to writing bots for Slack, bringing your bot building wizardry over to Smooch will be a piece of cake.
 
 ## Installation
