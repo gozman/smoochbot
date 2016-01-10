@@ -38,10 +38,6 @@ Alternatively, you can deploy SmoochBot directly to Heroku with this button: <a 
   <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
 </a>
 
-```bash
-npm install
-```
-
 ## Getting Started
 
 1) Install SmoochBot. See [Installation](#installation) instructions.
