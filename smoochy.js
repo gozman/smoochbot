@@ -5,6 +5,8 @@
     \   \    |  |\/|  | |  |  |  | |  |  |  | |  |     |   __   | |   _  <  |  |  |  |     |  |     
 .----)   |   |  |  |  | |  `--'  | |  `--'  | |  `----.|  |  |  | |  |_)  | |  `--'  |     |  |     
 |_______/    |__|  |__|  \______/   \______/   \______||__|  |__| |______/   \______/      |__|     
+
+SmoochBot is 
                                                                                                     
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -13,6 +15,8 @@ var Botkit = require('./lib/Botkit.js')
 var os = require('os');
 var validator = require("email-validator");
 
+
+//Initialization
 var controller = Botkit.smoochbot({
     appToken:process.env.APPTOKEN,
     key:process.env.KEY,
@@ -31,6 +35,7 @@ controller.setupWebserver(process.env.PORT, function(err, server) {
   controller.createWebhookEndpoints(server);
 });
 
+//A greeting will start the conversation
 controller.hears(['hello','hi','sup','yo','hey'],'message_received',function(bot,message) {
   bot.api.appUsers.get(message.user).then(function(response) {
 
@@ -45,15 +50,7 @@ controller.hears(['hello','hi','sup','yo','hey'],'message_received',function(bot
 
 })
 
-controller.hears(['uptime','identify yourself','who are you','what is your name'],'message_received',function(bot,message) {
-
-  var hostname = os.hostname();
-  var uptime = formatUptime(process.uptime());
-
-  bot.reply(message,'I am a bot named SmoochBot I have been running for ' + uptime + ' on ' + hostname + ".");
-
-});
-
+//Handlers for various steps in the conversation
 var askEmail = function(response, convo) {
   console.log(convo);
 
@@ -100,6 +97,18 @@ var askPlatform = function(response, convo) {
     convo.next();
   });
 }
+
+//Uptime stuff
+
+controller.hears(['uptime','identify yourself','who are you','what is your name'],'message_received',function(bot,message) {
+
+  var hostname = os.hostname();
+  var uptime = formatUptime(process.uptime());
+
+  bot.reply(message,'I am a bot named SmoochBot I have been running for ' + uptime + ' on ' + hostname + ".");
+
+});
+
 
 function formatUptime(uptime) {
   var unit = 'second';
