@@ -1,10 +1,17 @@
 # SmoochBot
 
-Based on BotKit by Howdy.ai
+SmoochBot is a toolkit that you can use to build automated, intelligent bots that tie into conversations on [Smooch.io](https://smooch.io). 
 
-<a href="https://heroku.com/deploy?template=https://github.com/gozman/smoochbot">
-  <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
-</a>
+You can use SmoochBot to:
+
+ * Walk your users through a friendly, guided, on-boarding process
+ * Handle common customer support questions
+ * Route users to an appropriate team member
+ * Provide an automated conversational interface to your app
+ * Provide shipping and logistic updates to your customers in response to events in your CRM or E-Commerce system
+ * Almost anything else you can imagine!
+
+We've based SmoochBot on the awesome [BotKit](http://howdy.ai/botkit). This means that if you're used to writing bots for Slack, bringing your bot building wizardry over to Smooch will be a piece of cake.
 
 ## Installation
 
